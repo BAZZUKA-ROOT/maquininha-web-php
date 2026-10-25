@@ -1,0 +1,66 @@
+MAQUININHA WEB - PRIMEIRA VERSAO
+
+O que faz:
+- Gera pagamento Pix via Mercado Pago.
+- Mostra QR Code Pix e codigo copia e cola.
+- Consulta status do Pix automaticamente a cada 5 segundos.
+- Permite pagamento por cartao digitado usando MercadoPago.js/tokenizacao.
+- Nao salva numero do cartao no banco.
+- Guarda historico das vendas no MySQL.
+- Painel simples em /admin.
+
+INSTALACAO:
+1) Copie a pasta maquininha_web para seu servidor. Exemplo XAMPP:
+   C:\xampp\htdocs\maquininha_web
+
+2) Abra o phpMyAdmin e importe:
+   sql/database.sql
+
+3) Edite config.php:
+   DB_HOST, DB_NAME, DB_USER, DB_PASS
+   MP_ACCESS_TOKEN
+   MP_PUBLIC_KEY
+   ADMIN_SENHA
+
+4) Acesse:
+   http://localhost/maquininha_web/
+
+5) Historico:
+   http://localhost/maquininha_web/admin/
+
+WEBHOOK OPCIONAL:
+Se estiver em dominio online com HTTPS, coloque no config.php:
+WEBHOOK_URL = https://seudominio.com/maquininha_web/webhook_mp.php
+Depois cadastre essa URL no painel de Webhooks do Mercado Pago.
+Mesmo sem webhook, a tela do Pix consulta status automaticamente.
+
+OBSERVACOES IMPORTANTES:
+- Para cartao funcionar em producao, use credenciais de producao do Mercado Pago.
+- Para testes, use credenciais/test cards do Mercado Pago.
+- Cartao digitado precisa de internet e HTTPS no dominio real.
+- Aproximacao NFC no iPhone nao funciona direto por site PHP. Para isso precisa Tap to Pay autorizado via app/provedor.
+
+ALTERAÇÃO VISUAL V2:
+- Tela principal redesenhada para visual premium/mobile.
+- QR Code Pix agora fica em card branco destacado.
+- Botões Pix/cartão maiores e mais parecidos com app de pagamento.
+- Admin redesenhado com cards de resumo e status colorido.
+- Não foi alterada a lógica principal de Mercado Pago nem a estrutura do banco.
+
+ALTERACOES DA V3 - FLUXO MAQUININHA
+- Agora o fluxo ficou em etapas: 1) Valor, 2) Forma de pagamento, 3) Pagamento.
+- Pix e cartão não ficam mais abertos juntos. Ao escolher um, o outro fecha.
+- Cartão recebeu validações antes de enviar ao Mercado Pago:
+  * valor obrigatório;
+  * nome completo do titular;
+  * e-mail válido;
+  * CPF válido;
+  * parcelas obrigatórias;
+  * token obrigatório do Mercado Pago;
+  * bloqueio de duplo clique no botão processar.
+- Backend também valida CPF, e-mail, valor, token e parcelas.
+- Envio para Mercado Pago agora manda mais dados do pagador e do item da venda para ajudar na análise antifraude.
+
+IMPORTANTE SOBRE APROVACAO DO CARTAO
+Nenhum sistema consegue garantir aprovação. Quem aprova ou recusa é Mercado Pago/banco emissor.
+Esta versão faz as validações corretas e envia dados mais completos para reduzir recusas por dados faltando.

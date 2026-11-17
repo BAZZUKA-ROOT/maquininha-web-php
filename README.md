@@ -32,7 +32,14 @@ cp .env.example .env
 # Preencha com suas credenciais
 ```
 
-Ou edite `config.php` diretamente.
+Configure DB_USER, DB_PASS, MP_ACCESS_TOKEN, MP_PUBLIC_KEY e ADMIN_SENHA_HASH
+no ambiente do servidor PHP (Apache, PHP-FPM, Docker). O projeto nao carrega
+arquivos .env automaticamente. Nao use usuario MySQL root.
+
+ADMIN_SENHA_HASH deve ser gerado pelo PHP usando password_hash e senha
+longa e unica. Nunca exponha a senha real no codigo ou em comandos/logs.
+A aplicacao nao inicia sem as variaveis obrigatorias configuradas.
+
 
 ### Obter credenciais Mercado Pago
 

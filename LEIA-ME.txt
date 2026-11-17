@@ -16,11 +16,11 @@ INSTALACAO:
 2) Abra o phpMyAdmin e importe:
    sql/database.sql
 
-3) Edite config.php:
-   DB_HOST, DB_NAME, DB_USER, DB_PASS
+3) Defina no ambiente do servidor PHP (nao no codigo-fonte):
+   DB_HOST, DB_NAME, DB_USER, DB_PASS (usuario dedicado e senha longa)
    MP_ACCESS_TOKEN
    MP_PUBLIC_KEY
-   ADMIN_SENHA
+   ADMIN_SENHA_HASH (hash gerado por password_hash)
 
 4) Acesse:
    http://localhost/maquininha_web/
@@ -29,7 +29,7 @@ INSTALACAO:
    http://localhost/maquininha_web/admin/
 
 WEBHOOK OPCIONAL:
-Se estiver em dominio online com HTTPS, coloque no config.php:
+Se estiver em dominio online com HTTPS, configure WEBHOOK_URL no ambiente:
 WEBHOOK_URL = https://seudominio.com/maquininha_web/webhook_mp.php
 Depois cadastre essa URL no painel de Webhooks do Mercado Pago.
 Mesmo sem webhook, a tela do Pix consulta status automaticamente.

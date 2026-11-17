@@ -1,25 +1,22 @@
 <?php
-// CONFIGURACAO PRINCIPAL - MAQUININHA WEB
-// 1) Crie o banco e importe sql/database.sql
-// 2) Coloque suas credenciais do Mercado Pago abaixo
-// 3) Acesse /maquininha_web/ no navegador
-
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'maquininha_web');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// Carregue credenciais pelo ambiente do PHP, jamais pelo Git.
+// Arquivos .env nao sao interpretados automaticamente.
+function maquininha_required_env($name) {
+    $value = getenv($name);
+    if ($value === false || trim((string)$value) === '') {
+        throw new RuntimeException('Configuracao obrigatoria ausente: ' . $name);
+    }
+    return (string)$value;
+}
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'maquininha_web');
+define('DB_USER', maquininha_required_env('DB_USER'));
+define('DB_PASS', maquininha_required_env('DB_PASS'));
 define('DB_CHARSET', 'utf8mb4');
-
-// Mercado Pago - producao ou teste
-// Access Token: painel Mercado Pago > Desenvolvedores > Credenciais
-// Public Key: usada no cartão pelo navegador
-define('MP_ACCESS_TOKEN', 'COLE_SEU_ACCESS_TOKEN_AQUI');
-define('MP_PUBLIC_KEY', 'COLE_SUA_PUBLIC_KEY_AQUI');
-
-// Dados que aparecem no pagamento/recibo
-define('NOME_LOJA', 'Minha Maquininha');
+define('MP_ACCESS_TOKEN', maquininha_required_env('MP_ACCESS_TOKEN'));
+define('MP_PUBLIC_KEY', maquininha_required_env('MP_PUBLIC_KEY'));
+define('NOME_LOJA', getenv('NOME_LOJA') ?: 'Minha Maquininha');
 define('MOEDA', 'BRL');
-define('WEBHOOK_URL', ''); // opcional: https://seudominio.com/maquininha_web/webhook_mp.php
-
-// Admin simples
-define('ADMIN_SENHA', '123456');
+define('WEBHOOK_URL', getenv('WEBHOOK_URL') ?: '');
+// Gere com a funcao password_hash do PHP e salve somente o hash no ambiente.
+define('ADMIN_SENHA_HASH', maquininha_required_env('ADMIN_SENHA_HASH'));

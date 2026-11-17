@@ -1,4 +1,10 @@
 <?php
+ini_set('session.cookie_httponly', '1');
+ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_samesite', 'Lax');
+if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+    ini_set('session.cookie_secure', '1');
+}
 session_start();
 require_once __DIR__ . '/../includes/db.php';
 
@@ -9,12 +15,13 @@ if (isset($_GET['sair'])) {
 }
 
 if (isset($_POST['senha'])) {
-    if (hash_equals(ADMIN_SENHA, (string)$_POST['senha'])) {
+    if (password_verify((string)$_POST['senha'], ADMIN_SENHA_HASH)) {
+        session_regenerate_id(true);
         $_SESSION['admin_ok'] = true;
         header('Location: ./');
         exit;
     }
-    $erro = 'Senha incorreta. Confira a senha no arquivo config.php.';
+    $erro = 'Credenciais inválidas.';
 }
 
 function money($v) { return 'R$ ' . number_format((float)$v, 2, ',', '.'); }
@@ -37,7 +44,7 @@ if (empty($_SESSION['admin_ok'])): ?>
       <div class="brand-mark">MW</div>
       <div><span class="eyebrow">Painel seguro</span><h1>Histórico de vendas</h1></div>
     </div>
-    <p class="note">A senha padrão desta versão é <strong>123456</strong>. Para trocar, edite <code>ADMIN_SENHA</code> no arquivo <code>config.php</code>.</p>
+    <p class="note">O acesso exige senha configurada no ambiente do servidor. Não há senha padrão.</p>
     <?php if(!empty($erro)): ?><p class="erro"><?= h($erro) ?></p><?php endif; ?>
     <form method="post" class="form-card">
       <label>Senha do administrador</label>
